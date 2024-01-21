@@ -19,7 +19,6 @@ impl Printable for Player {
     }
 }
 
-
 /// Define a generic function to get user input
 fn collect_input<T: std::str::FromStr>(prompt: &str) -> T {
     loop{
@@ -55,19 +54,16 @@ fn collect_players() -> Vec<Player> {
     players
 }
 
-
 /// Define a function to get the max number
 fn create_max_range(players: &Vec<Player>) -> u32 {
     players.len() as u32 * 50
 }
-
 
 // Define a function to generate a random number
 // M-1: via rand library
 fn generate_number(max_range: u32) -> u32 {
     rand::thread_rng().gen_range(1..max_range)
 }
-
 
 fn main() {
     let x = generate_number(100);
