@@ -1,6 +1,7 @@
+use rand::Rng;
+use reqwest::*;
 use std::fmt::format;
 use std::io::{self, stdin};
-use rand::Rng;
 // Define a struct to represent a player
 struct Player {
     name: String,
@@ -21,16 +22,16 @@ impl Printable for Player {
 
 /// Define a generic function to get user input
 fn collect_input<T: std::str::FromStr>(prompt: &str) -> T {
-    loop{
+    loop {
         println!("{}", prompt);
         let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Failed to read input");
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
         match input.trim().parse() {
-            Ok(value) => return  value,
+            Ok(value) => return value,
             Err(_) => continue,
-            
         }
-
     }
 }
 
@@ -49,7 +50,7 @@ fn collect_players() -> Vec<Player> {
     }
     for i in 1..=num_players {
         let name = collect_input(format!("Player {} name: ", i).as_str());
-        players.push(Player {name, score: 0});
+        players.push(Player { name, score: 0 });
     }
     players
 }
@@ -61,11 +62,27 @@ fn create_max_range(players: &Vec<Player>) -> u32 {
 
 // Define a function to generate a random number
 // M-1: via rand library
-fn generate_number(max_range: u32) -> u32 {
-    rand::thread_rng().gen_range(1..max_range)
+// fn generate_number(max_range: u32) -> u32 {
+//     rand::thread_rng().gen_range(1..max_range)
+// }
+
+#[tokio::main]
+// M-2: via API
+async fn generate_number(max_range: u32) -> Result<u32> {
+    let body = reqwest::get("https://www.random.org/integers/?num=1&min=1&max={MAX}&col=1&base=10&format=plain&rnd=new"
+    .replace("{MAX}", &max_range.to_string()),
+    )
+    .await?
+    .text()
+    .await?;
+
+    let val = body.trim().parse::<u32>().expect("Error in parsing");
+    println!("value = {}", val);
+
+    Ok(val)
 }
 
 fn main() {
-    let x = generate_number(100);
-    print!("{}",x);
+    let _ = generate_number(100);
+    //print!("{}", x);
 }
