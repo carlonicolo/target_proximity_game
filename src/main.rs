@@ -82,6 +82,20 @@ async fn generate_number(max_range: u32) -> Result<u32> {
     Ok(val)
 }
 
+
+/// Define a function to get the proximity from the players
+/// [proximity = abs_diff(guess, target)]
+fn collect_guesses_into_proximities(players: &Vec<Player>, max_range: u32) -> Vec<(String, u32)> {
+    let mut player_proximities = Vec::<(String, u32)>::new();
+    let target = generate_number(create_max_range(players)).expect("Failure in generating random value");
+    // println!("target: {}", target);
+    for player in players {
+        print!("{}'s turn", player.name);
+        let guess = collect_input::<u32>(&format!("Guess the number (1 - {max_range}):"));
+    }
+    player_proximities
+}
+
 fn main() {
     let _ = generate_number(100);
     //print!("{}", x);
