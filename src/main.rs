@@ -92,11 +92,61 @@ fn collect_guesses_into_proximities(players: &Vec<Player>, max_range: u32) -> Ve
     for player in players {
         print!("{}'s turn", player.name);
         let guess = collect_input::<u32>(&format!("Guess the number (1 - {max_range}):"));
+        player_proximities.push((player.name.clone(), guess.abs_diff(target) ));
     }
     player_proximities
 }
 
+
+/// Define a function to get the winner
+fn get_winner(player_proximities: &Vec<(String, u32)>) -> String {
+    player_proximities[0].0.to_owned()
+}
+
+/// Define a function to update the scores
+fn update_scores(players: &mut Vec<Player>, winner: &str) {
+    for player in players {
+        if player.name == winner {
+            player.score += 1
+        }
+    }
+}
+
+/// Define a function to print the scores
+fn print_scores(players: &Vec<Player>) {
+    print!("Scores: ");
+    for player in players {
+        println!("- {}", player.to_string() );
+    }
+}
+
+/// Define a function to play the game
+/// This function starts the Target Proximity Game. It gets the players, creates the max range,
+/// and runs the game in a loop until the players decide to stop playing. It prints the winner
+/// and updates the scores of the players.
+fn play_game(){
+    print!("Welcome to the Target Proximity Game! ");
+    let mut players = collect_players();
+    let max_range = create_max_range(&players);
+    
+    loop {
+        let mut player_proximities = collect_guesses_into_proximities(&players, max_range);
+        player_proximities.sort_by_key(|&(_, v)|v);
+        let winner = get_winner(&player_proximities);
+
+        println!("Congratulations, {}! You are the winner!", winner);
+        update_scores(&mut players, &winner);
+        print_scores(&players);
+
+        let play_again: String = collect_input("Play again? (y/n) ");
+
+        // if input is anything other "y", it breaks
+        if play_again.to_ascii_lowercase() != "y" {
+            break;
+        }
+    }
+}
+
 fn main() {
-    let _ = generate_number(100);
-    //print!("{}", x);
+    play_game();
 }
