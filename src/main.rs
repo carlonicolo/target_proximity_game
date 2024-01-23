@@ -197,6 +197,17 @@ mod tests {
         assert_eq!(player.to_string(), "Karlitos (5)");
     }
 
+    #[test]
+    /// Test if the winner is correctly declared from given players proximity list
+    fn test_get_winner_from_players_proximities() {
+        let mut player_proximities = Vec::<(String, u32)>::new();
+        player_proximities.insert(0, ("Karlitos".to_string(), 20));
+        player_proximities.insert(0, ("Smith".to_string(), 10));
+        player_proximities.sort_by_key(|&(_, v)|v);
+
+        assert_eq!(get_winner(&player_proximities), "Smith".to_string());
+
+    }
 
 
 }
