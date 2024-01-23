@@ -150,3 +150,53 @@ fn play_game(){
 fn main() {
     play_game();
 }
+
+
+#[cfg(test)]
+/// Define unit test case for the functions
+mod tests {
+    use crate::{create_max_range, Player};
+
+    use super::*;
+
+    #[test]
+    /// Test if the max range for given players is valid
+    fn test_create_max_range() {
+        let players = vec![
+            Player {
+                name: "Karlitos".to_string(),
+                score: 0,
+            },
+            Player {
+                name: "Jack".to_string(),
+                score: 0,
+            },
+        ];
+
+        let max_range = create_max_range(&players);
+        assert_eq!(max_range, players.len() as u32 * 50);
+    }
+
+    #[test]
+    /// Test if generated random number is valid
+    fn test_valid_rng() {
+        let max_val = 100;
+        let rand_value = generate_number(max_val).unwrap();
+
+        assert!(rand_value >= 1 && rand_value <= max_val);
+    }
+
+    #[test]
+    /// Test if the player is correctly displayed
+    fn test_player_to_string() {
+        let player = Player {
+            name: "Karlitos".to_string(),
+            score: 5,
+        };
+        
+        assert_eq!(player.to_string(), "Karlitos (5)");
+    }
+
+
+
+}
